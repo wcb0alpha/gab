@@ -143,12 +143,13 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, collection, getDocs, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyAZI6Gbesc4U6d0oU4Us1HT0pK6Z6_m1UU",
+    authDomain: "grayson-cdc2e.firebaseapp.com",
+    projectId: "grayson-cdc2e",
+    storageBucket: "grayson-cdc2e.firebasestorage.app",
+    messagingSenderId: "862954707657",
+    appId: "1:862954707657:web:8a880e5a039fad95888b18",
+    measurementId: "G-T8B1VDZ77S"
 };
 
 async function loadBlogPosts() {
@@ -170,7 +171,7 @@ async function loadBlogPosts() {
         const db = getFirestore(app);
 
         const postsQuery = query(
-            collection(db, 'posts'),
+            collection(db, 'blog_posts'),
             orderBy('createdAt', 'desc'),
             limit(6)
         );
