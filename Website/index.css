@@ -4,19 +4,14 @@
 */
 
 :root {
-    /* Color Palette - Literary Phases */
-    --clr-bg: #0a0c10;
-    --clr-surface: #151921;
-    --clr-text: #e0e6ed;
-    --clr-text-muted: #94a3b8;
+    /* Color Palette - Crown of Whispers */
+    --clr-bg: #030508; /* Deep Black Glass */
+    --clr-surface: #0e1520; /* Cold Steel Blue Dark */
+    --clr-text: #ffffff; /* Clinical White */
+    --clr-text-muted: #7f95ac; /* Muted Cold Blue */
     
-    /* Phase-based Accents */
-    --clr-callios: #3b82f6; /* Cold Steel/Clinical Blue */
-    --clr-ascent: #10b981;  /* Emerald/Prismatic */
-    --clr-grasmere: #f59e0b; /* Amber/Sacred Gold */
-    --clr-rebirth: #ec4899;  /* Pink/Restoration */
-    
-    --clr-accent: #06b6d4; /* Teal/Cyan Primary */
+    --clr-accent: #ef4444; /* Alarm Red Strobe */
+    --clr-secondary: #3b82f6; /* Cold Steel Blue */
     
     /* Layout */
     --container-max: 1100px;
@@ -119,7 +114,7 @@ span {
     justify-content: center;
     text-align: center;
     position: relative;
-    background-image: url('assets/hero.png');
+    background-image: url('assets/Final Conceptual Images/image_03_crown_of_whispers_fantasy_1772342768249.png');
     background-size: cover;
     background-position: center;
     overflow: hidden;
@@ -488,7 +483,56 @@ footer {
     font-size: 0.9rem;
 }
 
-/* Mobile Responsiveness */
+/* Gallery Section (Masonry) */
+.gallery {
+    background: var(--clr-bg);
+}
+
+.gallery-grid {
+    column-count: 3;
+    column-gap: 1.5rem;
+    padding-top: 2rem;
+}
+
+.gallery-item {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: var(--transition-smooth);
+    filter: grayscale(20%) brightness(0.9);
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+    filter: grayscale(0%) brightness(1.1);
+}
+
+.gallery-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(239, 68, 68, 0.4), transparent);
+    opacity: 0;
+    transition: var(--transition-smooth);
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+/* Mobile Responsiveness Updates */
+@media (max-width: 900px) {
+    .gallery-grid { column-count: 2; }
+}
+
 @media (max-width: 768px) {
     .nav-links { display: none; }
     .hero h1 { font-size: 3.5rem; }
@@ -496,4 +540,5 @@ footer {
     .about-text h2 { font-size: 2.5rem; }
     .services-grid { grid-template-columns: 1fr; }
     .contact-box h2 { font-size: 2.5rem; }
+    .gallery-grid { column-count: 1; }
 }
