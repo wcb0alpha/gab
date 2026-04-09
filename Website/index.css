@@ -116,14 +116,15 @@ span {
     position: relative;
     background-image: url('assets/Final Conceptual Images/image_03_crown_of_whispers_fantasy_1772342768249.png');
     background-size: cover;
-    background-position: center;
+    background-position: center bottom;
     overflow: hidden;
 }
 
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, transparent, var(--clr-bg));
+    background: radial-gradient(circle at center, transparent 20%, var(--clr-bg) 100%);
+    background-color: rgba(3, 5, 8, 0.4); /* Darken to make text punchier */
 }
 
 .hero-content {
@@ -133,15 +134,19 @@ span {
 }
 
 .hero h1 {
-    font-size: clamp(3rem, 10vw, 6rem);
-    margin-bottom: 1.5rem;
+    font-size: clamp(3.5rem, 12vw, 7rem);
+    margin-bottom: 1rem;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 0 50px rgba(255,255,255,0.2);
+    letter-spacing: 0.05em;
 }
 
 .hero p {
-    font-size: 1.25rem;
-    color: var(--clr-text-muted);
-    letter-spacing: 0.1em;
+    font-size: 1.35rem;
+    color: #ffffff;
+    font-weight: 600;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
+    text-shadow: 0 4px 15px rgba(0,0,0,1);
 }
 
 .cta-scroll {
