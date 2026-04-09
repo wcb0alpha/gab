@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAB. | Author, Poet & Artist</title>
-    <meta name="description" content="Portfolio of GAB - Winner of the Book Edit Writers' Prize 2025. Author of Until Time Runs Out, The Grey Spot, and more.">
+    <title>Grayson Anderson Brown | Author, Poet & Artist</title>
+    <meta name="description" content="Portfolio of Grayson Anderson Brown - Winner of the Book Edit Writers' Prize 2025. Author of Until Time Runs Out, The Grey Spot, and more.">
     <link rel="stylesheet" href="index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 <body class="sterile-theme js-ready">
     <div class="grain-overlay"></div>
     <nav class="glass-nav">
         <div class="nav-content">
-            <div class="logo" id="nav-logo">GAB.</div>
+            <div class="logo" id="nav-logo">Grayson Anderson Brown</div>
             <ul class="nav-links" id="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
@@ -65,9 +66,9 @@
             <div class="container">
                 <div class="about-grid">
                     <div class="about-text animate-on-scroll">
-                        <span class="eyebrow">The Artist</span>
-                        <h2>A Meditation on the <br><span>Body as Prison.</span></h2>
-                        <p>GAB is a British-born Jamaican author and poet, a South London native, and a graduate of the City London University Novel Writing course.</p>
+                        <span class="eyebrow animate-on-scroll">The Artist</span>
+                        <h2 class="animate-on-scroll reveal-blur">A Meditation on the <br><span>Body as Prison.</span></h2>
+                        <p>Grayson Anderson Brown is a British-born Jamaican author and poet, a South London native, and a graduate of the City London University Novel Writing course.</p>
                         <p>With over 20 years of writing credits, he has been recognized by the "Spread The Word" emerging writers program and the London Library program. Most recently, he was named the winner of the <strong>Book Edit Writers' Prize 2025</strong>.</p>
                         <div class="achievements">
                             <div class="achievement-item">
@@ -87,8 +88,8 @@
         <section id="literature" class="literature">
             <div class="container">
                 <header class="section-header center">
-                    <span class="eyebrow">Literature</span>
-                    <h2>The Written World</h2>
+                    <span class="eyebrow animate-on-scroll">Literature</span>
+                    <h2 class="animate-on-scroll reveal-blur">The Written World</h2>
                 </header>
                 
                 <div class="book-grid">
@@ -146,8 +147,8 @@
         <section id="poems" class="poems">
             <div class="container narrow">
                 <div class="poem-display animate-on-scroll">
-                    <span class="eyebrow">The Mountain Top</span>
-                    <blockquote class="poem-text">
+                    <span class="eyebrow animate-on-scroll">The Mountain Top</span>
+                    <blockquote class="poem-text animate-on-scroll reveal-blur">
                         "It’s never easy to reach the mountain top<br>
                         You begin with hopes and dreams<br>
                         The endless possibilities<br>
@@ -165,8 +166,8 @@
         <section id="services" class="services">
             <div class="container">
                 <header class="section-header">
-                    <span class="eyebrow">Services</span>
-                    <h2>Voice & Guidance</h2>
+                    <span class="eyebrow animate-on-scroll">Services</span>
+                    <h2 class="animate-on-scroll reveal-blur">Voice & Guidance</h2>
                 </header>
                 <div class="services-grid">
                     <div class="service-card animate-on-scroll">
@@ -188,8 +189,8 @@
         <section id="blog" class="blog">
             <div class="container">
                 <header class="section-header center">
-                    <span class="eyebrow">Writing</span>
-                    <h2>From the Journal</h2>
+                    <span class="eyebrow animate-on-scroll">Writing</span>
+                    <h2 class="animate-on-scroll reveal-blur">From the Journal</h2>
                 </header>
                 <div class="blog-grid" id="blog-container">
                     <div class="blog-loading">Loading posts...</div>
@@ -200,8 +201,8 @@
         <section id="gallery" class="gallery">
             <div class="container container-wide animate-on-scroll">
                 <header class="section-header center">
-                    <span class="eyebrow">Visuals</span>
-                    <h2>The Conceptual Gallery</h2>
+                    <span class="eyebrow animate-on-scroll">Visuals</span>
+                    <h2 class="animate-on-scroll reveal-blur">The Conceptual Gallery</h2>
                 </header>
                 <div class="gallery-split">
                     <div class="gallery-sidebar" id="gallery-container">
@@ -210,11 +211,15 @@
                     <div class="gallery-main viewer-sticky">
                         <div class="gallery-viewer" id="main-viewer">
                             <div class="viewer-meta">
-                                <span class="archive-id" id="archive-id">ARC_01</span>
-                                <span class="archive-zoom">100% SCALE</span>
+                                <!-- ARC badge and Scale removed for cleaner aesthetic -->
                             </div>
                             <img src="" id="viewer-img" alt="Select an image to observe">
                             <div class="viewer-scanline"></div>
+                            <div class="viewer-observation" id="viewer-observation">
+                                <div class="observation-meta">LOG.OBSERVATION_SCN</div>
+                                <h4 id="observation-title">---</h4>
+                                <p id="observation-text">Initializing sensor array...</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -243,20 +248,27 @@
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">GAB.</div>
-                <p>&copy; 2026 GAB. All rights reserved.</p>
-                <div class="socials">
-                    <a href="#">LinkedIn</a>
-                    <a href="#">Twitter</a>
-                    <a href="#">Instagram</a>
-                </div>
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>Grayson Anderson Brown <a href="#services" class="mic-link" aria-label="Voice Over Demo" title="Voice Over Demo"><i class='bx bx-microphone'></i></a></h3>
+                <p>&copy; 2026. All rights reserved.</p>
+            </div>
+
+            <div class="footer-center">
+                <a href="#home" class="back-to-top" aria-label="Back to top" title="Back to top">
+                    <i class='bx bx-up-arrow-alt'></i>
+                </a>
+            </div>
+
+            <div class="footer-socials">
+                <a href="#" aria-label="LinkedIn"><i class='bx bxl-linkedin'></i></a>
+                <a href="#" aria-label="Twitter"><i class='bx bxl-twitter'></i></a>
+                <a href="#" aria-label="Instagram"><i class='bx bxl-instagram'></i></a>
             </div>
         </div>
     </footer>
 
-    <script type="module" src="main.js"></script>
+    <script type="module" src="main_v2.js?v=2.3"></script>
 </body>
 </html>
