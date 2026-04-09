@@ -137,8 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryItems.forEach((item, index) => {
             item.addEventListener('click', () => {
                 updateViewer(index);
-                // Smooth scroll to viewer on mobile
-                if (window.innerWidth < 768) {
+                // Smooth scroll to viewer on mobile (when stacked)
+                if (window.innerWidth < 1100) {
                     document.getElementById('main-viewer').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             });

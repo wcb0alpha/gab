@@ -20,6 +20,7 @@
     
     /* Layout */
     --container-max: 1100px;
+    --container-wide: 1400px;
     --container-narrow: 800px;
     --section-padding: 8rem 0;
     
@@ -205,6 +206,10 @@ span {
 
 .container.narrow {
     max-width: var(--container-narrow);
+}
+
+.container-wide {
+    max-width: var(--container-wide);
 }
 
 /* Section Styling */
@@ -640,12 +645,43 @@ footer {
     opacity: 1;
 }
 
-/* Gallery Viewer (Switcher) */
-.gallery-viewer-container {
-    margin-bottom: 4rem;
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
+/* Gallery Split Layout (Workstation) */
+.gallery-split {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 3rem;
+    align-items: start;
+    margin-top: 3rem;
+}
+
+.gallery-sidebar {
+    max-height: 85vh;
+    overflow-y: auto;
+    padding-right: 1.5rem;
+    /* Masonry grid within the sidebar */
+    column-count: 2;
+    column-gap: 1.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--clr-accent) rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbar for Sidebar */
+.gallery-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.gallery-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.gallery-sidebar::-webkit-scrollbar-thumb {
+    background: var(--clr-accent);
+    border-radius: 10px;
+}
+
+.gallery-main.viewer-sticky {
+    position: sticky;
+    top: 120px;
 }
 
 .gallery-viewer {
@@ -718,12 +754,29 @@ footer {
     opacity: 0.3;
 }
 
-@media (max-width: 768px) {
-    .gallery-viewer {
-        aspect-ratio: 4/5; /* Better for portrait mobile views */
+@media (max-width: 1024px) {
+    .gallery-split {
+        grid-template-columns: 1fr;
+        gap: 2rem;
     }
-    .gallery-viewer-container {
-        margin-bottom: 2.5rem;
+    .gallery-sidebar {
+        max-height: none;
+        overflow-y: visible;
+        column-count: 3;
+        order: 2;
+    }
+    .gallery-main.viewer-sticky {
+        position: static;
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .gallery-sidebar {
+        column-count: 2;
+    }
+    .gallery-viewer {
+        aspect-ratio: 4/5;
     }
 }
 

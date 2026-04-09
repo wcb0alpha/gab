@@ -181,23 +181,25 @@
         </section>
 
         <section id="gallery" class="gallery">
-            <div class="container">
+            <div class="container container-wide animate-on-scroll">
                 <header class="section-header center">
                     <span class="eyebrow">Visuals</span>
                     <h2>The Conceptual Gallery</h2>
                 </header>
-                <div class="gallery-viewer-container animate-on-scroll">
-                    <div class="gallery-viewer" id="main-viewer">
-                        <div class="viewer-meta">
-                            <span class="archive-id" id="archive-id">ARC_01</span>
-                            <span class="archive-zoom">100% SCALE</span>
-                        </div>
-                        <img src="" id="viewer-img" alt="Select an image to observe">
-                        <div class="viewer-scanline"></div>
+                <div class="gallery-split">
+                    <div class="gallery-sidebar" id="gallery-container">
+                        <!-- Images will be injected here via main.js -->
                     </div>
-                </div>
-                <div class="gallery-grid" id="gallery-container">
-                    <!-- Images will be injected here via main.js -->
+                    <div class="gallery-main viewer-sticky">
+                        <div class="gallery-viewer" id="main-viewer">
+                            <div class="viewer-meta">
+                                <span class="archive-id" id="archive-id">ARC_01</span>
+                                <span class="archive-zoom">100% SCALE</span>
+                            </div>
+                            <img src="" id="viewer-img" alt="Select an image to observe">
+                            <div class="viewer-scanline"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
