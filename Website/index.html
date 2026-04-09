@@ -14,15 +14,19 @@
     <nav class="glass-nav">
         <div class="nav-content">
             <div class="logo">GAB.</div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#literature">Literature</a></li>
                 <li><a href="#poems">Poems</a></li>
                 <li><a href="#services">Services</a></li>
+                <li><a href="#blog">Blog</a></li>
                 <li><a href="#gallery">Gallery</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
+            <button class="nav-hamburger" id="hamburger" aria-label="Open navigation menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
 
@@ -167,6 +171,18 @@
             </div>
         </section>
 
+        <section id="blog" class="blog">
+            <div class="container">
+                <header class="section-header center">
+                    <span class="eyebrow">Writing</span>
+                    <h2>From the Journal</h2>
+                </header>
+                <div class="blog-grid" id="blog-container">
+                    <div class="blog-loading">Loading posts...</div>
+                </div>
+            </div>
+        </section>
+
         <section id="gallery" class="gallery">
             <div class="container">
                 <header class="section-header center">
@@ -215,6 +231,6 @@
         </div>
     </footer>
 
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>

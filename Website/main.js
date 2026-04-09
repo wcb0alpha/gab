@@ -150,5 +150,113 @@ document.addEventListener('DOMContentLoaded', () => {
         const newElements = document.querySelectorAll('.gallery-item.animate-on-scroll');
         newElements.forEach(el => scrollObserver.observe(el));
     }
+
+    // 7. Hamburger Menu Toggle
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('open');
+        });
+
+        // Close menu when a link is clicked
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('open');
+            });
+        });
+    }
+
 });
 
+// ===== FIREBASE BLOG LOADER =====
+// TODO: Replace the firebaseConfig object below with your own Firebase project credentials.
+// Get these from: Firebase Console -> Your Project -> Project Settings -> Your Apps
+
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, getDocs, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+async function loadBlogPosts() {
+    const blogContainer = document.getElementById('blog-container');
+    if (!blogContainer) return;
+
+    // Skip Firebase if no project ID is configured
+    if (firebaseConfig.projectId === "YOUR_PROJECT_ID") {
+        blogContainer.innerHTML = `
+            <div class="blog-error">
+                ⚠ Firebase not configured yet. 
+                <br><small>Connect your Firebase project to load blog posts.</small>
+            </div>`;
+        return;
+    }
+
+    try {
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const postsQuery = query(
+            collection(db, 'posts'),
+            orderBy('createdAt', 'desc'),
+            limit(6)
+        );
+
+        const snapshot = await getDocs(postsQuery);
+
+        if (snapshot.empty) {
+            blogContainer.innerHTML = `<div class="blog-loading">No posts yet. Check back soon.</div>`;
+            return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+            const post = doc.data();
+            const date = post.createdAt?.toDate
+                ? post.createdAt.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                : 'Recent';
+
+            html += `
+                <div class="blog-card animate-on-scroll">
+                    <div class="blog-card-image" style="${post.imageUrl ? `background-image:url('${post.imageUrl}'); background-size:cover; background-position:center;` : ''}">
+                        ${!post.imageUrl ? 'No Image' : ''}
+                    </div>
+                    <div class="blog-card-body">
+                        <div class="blog-card-meta">
+                            <span class="blog-card-tag">${post.category || 'Writing'}</span>
+                            <span>${date}</span>
+                        </div>
+                        <h3 class="blog-card-title">${post.title || 'Untitled'}</h3>
+                        <p class="blog-card-excerpt">${post.excerpt || post.content?.substring(0, 120) + '...' || ''}</p>
+                        <a href="${post.slug ? 'blog/' + post.slug + '.html' : '#blog'}" class="btn-text">Read More →</a>
+                    </div>
+                </div>`;
+        });
+
+        blogContainer.innerHTML = html;
+
+        // Animate new cards
+        document.querySelectorAll('.blog-card.animate-on-scroll').forEach(el => {
+            const scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('active'); scrollObserver.unobserve(e.target); } });
+            }, { threshold: 0.1 });
+            scrollObserver.observe(el);
+        });
+
+    } catch (err) {
+        console.error('Firebase blog error:', err);
+        blogContainer.innerHTML = `<div class="blog-error">Could not load posts. Please try again later.</div>`;
+    }
+}
+
+loadBlogPosts();
