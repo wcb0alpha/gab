@@ -104,18 +104,60 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         galleryContainer.innerHTML = galleryHTML;
         
+        const viewerImg = document.getElementById('viewer-img');
+        const archiveId = document.getElementById('archive-id');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        function updateViewer(index) {
+            if (!viewerImg || !galleryImages[index]) return;
+
+            // Start swap animation
+            viewerImg.classList.add('swapping');
+
+            setTimeout(() => {
+                viewerImg.src = `assets/Final Conceptual Images/${galleryImages[index]}`;
+                viewerImg.alt = `GAB Conceptual Archive Piece ${index + 1}`;
+                if (archiveId) archiveId.innerText = `ARC_${(index + 1).toString().padStart(2, '0')}`;
+                
+                // End swap animation
+                viewerImg.classList.remove('swapping');
+
+                // Update active state in grid
+                galleryItems.forEach((item, i) => {
+                    if (i === index) item.classList.add('active-thumbnail');
+                    else item.classList.remove('active-thumbnail');
+                });
+            }, 300);
+        }
+
+        // Initialize with first image
+        updateViewer(0);
+
+        // Add click events to thumbnails
+        galleryItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                updateViewer(index);
+                // Smooth scroll to viewer on mobile
+                if (window.innerWidth < 768) {
+                    document.getElementById('main-viewer').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        });
+        
         // Parallax effect on scroll
         window.addEventListener('scroll', () => {
-            const items = document.querySelectorAll('.parallax-img');
-            items.forEach((item, i) => {
+            const parallaxImages = document.querySelectorAll('.parallax-img');
+            parallaxImages.forEach((img, i) => {
                 const speed = 0.05 + (i % 3) * 0.02;
-                const yPos = window.scrollY * speed;
-                item.style.transform = `scale(1.1) translateY(${yPos % 30}px)`;
+                const rect = img.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    const yPos = (window.scrollY - rect.top) * speed;
+                    img.style.transform = `scale(1.1) translateY(${yPos % 30}px)`;
+                }
             });
         });
 
-        const newElements = document.querySelectorAll('.gallery-item.animate-on-scroll');
-        newElements.forEach(el => scrollObserver.observe(el));
+        galleryItems.forEach(el => scrollObserver.observe(el));
     }
 
     // 7. Hamburger Menu Toggle
