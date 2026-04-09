@@ -202,7 +202,6 @@ async function loadBlogPosts() {
                         </div>
                         <h3 class="blog-card-title">${post.title || 'Untitled'}</h3>
                         <p class="blog-card-excerpt">${post.excerpt || post.content?.substring(0, 120) + '...' || ''}</p>
-                        <a href="${post.slug ? 'blog/' + post.slug + '.html' : '#blog'}" class="btn-text">Read More →</a>
                     </div>
                 </div>`;
         });
