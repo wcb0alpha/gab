@@ -8,9 +8,12 @@
     <link rel="stylesheet" href="index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="sterile-theme">
+    <div class="grain-overlay"></div>
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="cursor-strobe" id="cursor-strobe"></div>
     <nav class="glass-nav">
         <div class="nav-content">
             <div class="logo">GAB.</div>
@@ -231,6 +234,7 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script> 
     <script type="module" src="main.js"></script>
 </body>
 </html>

@@ -1,10 +1,97 @@
-/**
- * Grayson Anderson Brown - Interactions & Animations
- */
-
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. Intersection Observer for Scroll Animations
+    // 0. Initialize Lenis Smooth Scroll
+    const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false,
+    });
+
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // 1. Custom Cursor Tracking
+    const cursor = document.getElementById('cursor');
+    const strobe = document.getElementById('cursor-strobe');
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        // Strobe follows mouse instantly
+        if (strobe) {
+            strobe.style.left = `${mouseX}px`;
+            strobe.style.top = `${mouseY}px`;
+        }
+    });
+
+    // Cursor (outer ring) follows with a slight delay
+    function animateCursor() {
+        cursorX += (mouseX - cursorX) * 0.15;
+        cursorY += (mouseY - cursorY) * 0.15;
+        
+        if (cursor) {
+            cursor.style.left = `${cursorX}px`;
+            cursor.style.top = `${cursorY}px`;
+        }
+        requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // 2. Cursor Hover Interactions & Magnetic Buttons
+    const interactiveElements = document.querySelectorAll('a, button, .service-card, .book-card, .blog-card');
+    
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.classList.add('active');
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.classList.remove('active');
+            if (el.classList.contains('magnetic')) {
+                el.style.transform = `translate(0px, 0px)`;
+            }
+        });
+
+        // Magnetic Effect
+        if (el.classList.contains('btn-primary') || el.classList.contains('btn-outline')) {
+            el.classList.add('magnetic');
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                el.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+        }
+    });
+
+    // 3. Character-Staggered Text Reveal
+    function splitText(element) {
+        const text = element.innerText;
+        element.innerHTML = '';
+        text.split('').forEach((char, i) => {
+            const span = document.createElement('span');
+            span.innerText = char === ' ' ? '\u00A0' : char;
+            span.style.transitionDelay = `${i * 0.03}s`;
+            span.classList.add('char');
+            element.appendChild(span);
+        });
+    }
+
+    const revealTitles = document.querySelectorAll('.reveal');
+    revealTitles.forEach(title => splitText(title));
+
+    // 4. Interaction Observer for Scroll Animations
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -14,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('active');
-                // Unobserve after animation triggered
                 scrollObserver.unobserve(entry.target);
             }
         });
@@ -23,74 +109,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const animateElements = document.querySelectorAll('.animate-on-scroll');
     animateElements.forEach(el => scrollObserver.observe(el));
 
-    // 2. Subtle Hero Parallax
-    const hero = document.querySelector('.hero');
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        if (hero) {
-            hero.style.backgroundPositionY = (scrolled * 0.5) + 'px';
-        }
-    });
-
-    // 3. Navbar background shift on scroll
+    // 5. Navbar progressive blur
     const nav = document.querySelector('.glass-nav');
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            nav.style.padding = '1rem 0';
-            nav.style.background = 'rgba(10, 12, 16, 0.9)';
-        } else {
-            nav.style.padding = '1.5rem 0';
-            nav.style.background = 'rgba(10, 12, 16, 0.7)';
+        const scrollPercent = Math.min(window.scrollY / 400, 1);
+        if (nav) {
+            nav.style.backdropFilter = `blur(${12 + scrollPercent * 20}px)`;
+            nav.style.background = `rgba(10, 12, 16, ${0.7 + scrollPercent * 0.2})`;
+            nav.style.padding = `${1.5 - scrollPercent * 0.5}rem 0`;
         }
     });
 
-    // 4. Smooth Anchor Links (Legacy support / fine-tuning)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-            
-            if (targetElement) {
-                const navHeight = nav.offsetHeight;
-                const elementPosition = targetElement.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - navHeight;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // 5. Contact Form Simulation
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const btn = contactForm.querySelector('button');
-            const originalText = btn.textContent;
-            
-            btn.disabled = true;
-            btn.textContent = 'Sending...';
-            
-            // Simulate API call
-            setTimeout(() => {
-                btn.textContent = 'Message Sent!';
-                btn.style.background = '#10b981'; // Green
-                contactForm.reset();
-                
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.textContent = originalText;
-                    btn.style.background = 'var(--clr-accent)';
-                }, 3000);
-            }, 1500);
-        });
-    }
-
-    // 6. Gallery Injection
+    // 6. Gallery Parallax & Injection
     const galleryContainer = document.getElementById('gallery-container');
     if (galleryContainer) {
         const galleryImages = [
@@ -113,10 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
             "image_11_prismatic_ceiling_fantasy_1772364759365.png",
             "image_12_laughing_wind_fantasy_1772364775764.png",
             "image_13_beacon_fantasy_1772364789310.png",
-            "image_13_beacon_test_1772342597508.png",
             "image_14_mud_fingernails_fantasy_1772364817303.png",
             "image_15_the_maw_fantasy_1772364829439.png",
-            "image_16_grasmere_test_1772342287261.png",
             "image_16_the_two_eyes_fantasy_1772365030402.png",
             "image_17_giants_geometry_fantasy_1772365050612.png",
             "image_18_word_made_floor_fantasy_1772365062851.png",
@@ -137,16 +165,27 @@ document.addEventListener('DOMContentLoaded', () => {
         let galleryHTML = '';
         galleryImages.forEach((img, index) => {
             galleryHTML += `
-                <div class="gallery-item animate-on-scroll" style="transition-delay: ${(index % 3) * 0.1}s">
-                    <img src="assets/Final Conceptual Images/${img}" loading="lazy" alt="Endings Wake Concept Art ${index + 1}">
+                <div class="gallery-item animate-on-scroll">
+                    <img src="assets/Final Conceptual Images/${img}" 
+                         class="parallax-img" 
+                         loading="lazy" 
+                         alt="Endings Wake Concept Art ${index + 1}">
                     <div class="gallery-overlay"></div>
                 </div>
             `;
         });
-        
         galleryContainer.innerHTML = galleryHTML;
         
-        // Re-observe the newly injected elements
+        // Parallax effect on scroll
+        lenis.on('scroll', () => {
+            const items = document.querySelectorAll('.parallax-img');
+            items.forEach((item, i) => {
+                const speed = 0.05 + (i % 3) * 0.02;
+                const yPos = window.scrollY * speed;
+                item.style.transform = `scale(1.1) translateY(${yPos % 30}px)`;
+            });
+        });
+
         const newElements = document.querySelectorAll('.gallery-item.animate-on-scroll');
         newElements.forEach(el => scrollObserver.observe(el));
     }
@@ -161,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
             navLinks.classList.toggle('open');
         });
 
-        // Close menu when a link is clicked
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 hamburger.classList.remove('active');
@@ -173,9 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===== FIREBASE BLOG LOADER =====
-// TODO: Replace the firebaseConfig object below with your own Firebase project credentials.
-// Get these from: Firebase Console -> Your Project -> Project Settings -> Your Apps
-
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getFirestore, collection, getDocs, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
@@ -188,7 +223,7 @@ const firebaseConfig = {
     appId: "YOUR_APP_ID"
 };
 
-async function loadBlogPosts() {
+async function loadBlogPosts() { ... }
     const blogContainer = document.getElementById('blog-container');
     if (!blogContainer) return;
 
