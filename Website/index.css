@@ -1,0 +1,499 @@
+/* 
+    Grayson Anderson Brown - Premium Design System
+    Inspired by 'Endings Wake' 
+*/
+
+:root {
+    /* Color Palette - Literary Phases */
+    --clr-bg: #0a0c10;
+    --clr-surface: #151921;
+    --clr-text: #e0e6ed;
+    --clr-text-muted: #94a3b8;
+    
+    /* Phase-based Accents */
+    --clr-callios: #3b82f6; /* Cold Steel/Clinical Blue */
+    --clr-ascent: #10b981;  /* Emerald/Prismatic */
+    --clr-grasmere: #f59e0b; /* Amber/Sacred Gold */
+    --clr-rebirth: #ec4899;  /* Pink/Restoration */
+    
+    --clr-accent: #06b6d4; /* Teal/Cyan Primary */
+    
+    /* Layout */
+    --container-max: 1100px;
+    --container-narrow: 800px;
+    --section-padding: 8rem 0;
+    
+    /* Transitions */
+    --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--clr-bg);
+    color: var(--clr-text);
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Typography */
+h1, h2, h3 {
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+span {
+    color: var(--clr-accent);
+}
+
+.eyebrow {
+    display: block;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--clr-accent);
+    margin-bottom: 1rem;
+}
+
+/* Navigation */
+.glass-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 1.5rem 0;
+    background: rgba(10, 12, 16, 0.7);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-content {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2.5rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--clr-text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.nav-links a:hover {
+    color: var(--clr-accent);
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    background-image: url('assets/hero.png');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent, var(--clr-bg));
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+}
+
+.hero h1 {
+    font-size: clamp(3rem, 10vw, 6rem);
+    margin-bottom: 1.5rem;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: var(--clr-text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.cta-scroll {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--clr-text-muted);
+}
+
+/* Containers */
+.container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.container.narrow {
+    max-width: var(--container-narrow);
+}
+
+/* Section Styling */
+section {
+    padding: var(--section-padding);
+}
+
+.section-header {
+    margin-bottom: 4rem;
+}
+
+.section-header.center {
+    text-align: center;
+}
+
+.section-header h2 {
+    font-size: 3rem;
+}
+
+/* About Grid */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.about-text h2 {
+    font-size: 3.5rem;
+    margin-bottom: 2rem;
+}
+
+.about-text p {
+    margin-bottom: 1.5rem;
+    color: var(--clr-text-muted);
+    font-size: 1.1rem;
+}
+
+.achievements {
+    margin-top: 3rem;
+}
+
+.achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.achievement-item .year {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--clr-accent);
+}
+
+/* Image Container */
+.about-image {
+    position: relative;
+    height: 600px;
+    background: var(--clr-surface);
+    border-radius: 2rem;
+    overflow: hidden;
+}
+
+.texture-overlay {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    mix-blend-mode: color-dodge;
+    opacity: 0.3;
+}
+
+.about-img-portrait {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+
+/* Book Grid */
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+}
+
+.book-card {
+    background: var(--clr-surface);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition-smooth);
+}
+
+.book-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--clr-accent);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.book-media {
+    height: 380px;
+    border-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.book-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-smooth);
+}
+
+.book-card:hover .book-cover {
+    transform: scale(1.05);
+}
+
+.book-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.book-info .genre {
+    color: var(--clr-accent);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.book-info .blurb {
+    font-size: 0.95rem;
+    color: var(--clr-text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* Poem Section */
+.poems {
+    background: radial-gradient(circle at center, #151921, var(--clr-bg));
+}
+
+.poem-display {
+    text-align: center;
+}
+
+.poem-text {
+    font-size: 1.75rem;
+    font-style: italic;
+    color: var(--clr-text);
+    margin-top: 2rem;
+}
+
+/* Services */
+.services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.service-card {
+    padding: 3rem;
+    background: var(--clr-surface);
+    border-radius: 2rem;
+    text-align: center;
+}
+
+.service-card .icon {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+
+.service-card h3 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Contact */
+.contact-box {
+    background: linear-gradient(135deg, var(--clr-surface), #0a0c10);
+    padding: 4rem;
+    border-radius: 3rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.contact-box h2 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    color: white;
+    font-family: inherit;
+    transition: var(--transition-smooth);
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--clr-accent);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1.2rem;
+    background: var(--clr-accent);
+    color: var(--clr-bg);
+    border: none;
+    border-radius: 1rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-primary:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+}
+
+/* Buttons Other */
+.btn-text {
+    color: var(--clr-accent);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition-smooth);
+}
+
+.btn-text:hover {
+    border-bottom-color: var(--clr-accent);
+    gap: 0.8rem;
+}
+
+.btn-outline {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border: 1px solid var(--clr-accent);
+    color: var(--clr-accent);
+    text-decoration: none;
+    border-radius: 5rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    transition: var(--transition-smooth);
+}
+
+.btn-outline:hover {
+    background: var(--clr-accent);
+    color: var(--clr-bg);
+}
+
+/* Animations Variables */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.animate-on-scroll.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Reveal Delays */
+.reveal {
+    animation: revealIn 1s forwards;
+}
+
+.reveal-delay {
+    opacity: 0;
+    animation: revealIn 1s 0.3s forwards;
+}
+
+@keyframes revealIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer */
+footer {
+    padding: 4rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+}
+
+.footer-content p {
+    color: var(--clr-text-muted);
+    margin: 1.5rem 0;
+}
+
+.socials {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.socials a {
+    color: var(--clr-text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero h1 { font-size: 3.5rem; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-text h2 { font-size: 2.5rem; }
+    .services-grid { grid-template-columns: 1fr; }
+    .contact-box h2 { font-size: 2.5rem; }
+}
