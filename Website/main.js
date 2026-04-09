@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.add('js-ready');
     
     // 0. Initialize Lenis Smooth Scroll
     const lenis = new Lenis({
@@ -223,7 +224,7 @@ const firebaseConfig = {
     appId: "YOUR_APP_ID"
 };
 
-async function loadBlogPosts() { ... }
+async function loadBlogPosts() {
     const blogContainer = document.getElementById('blog-container');
     if (!blogContainer) return;
 

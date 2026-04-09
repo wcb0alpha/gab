@@ -42,7 +42,10 @@ body {
     font-family: var(--font-primary);
     line-height: 1.6;
     overflow-x: hidden;
-    cursor: none; /* Hide default for custom cursor */
+}
+
+body.js-ready {
+    cursor: none; /* Only hide if custom cursor logic is ready */
 }
 
 /* Global Grain Texture */
@@ -58,14 +61,14 @@ body {
 }
 
 /* Character Staggered Reveal */
-.char {
+body.js-ready .char {
     display: inline-block;
     opacity: 0;
     transform: translateY(20px) rotateX(-90deg);
     transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s linear;
 }
 
-.reveal.active .char {
+body.js-ready .reveal.active .char {
     opacity: 1;
     transform: translateY(0) rotateX(0);
 }
