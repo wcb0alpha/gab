@@ -12,6 +12,7 @@
     
     --clr-accent: #ef4444; /* Alarm Red Strobe */
     --clr-secondary: #3b82f6; /* Cold Steel Blue */
+    --clr-bg-alt: #0a0c10; /* Slightly lighter background for alternating sections */
     
     /* Typography */
     --font-primary: 'Outfit', sans-serif;
@@ -209,6 +210,11 @@ span {
 /* Section Styling */
 section {
     padding: var(--section-padding);
+    background-color: var(--clr-bg);
+}
+
+section:nth-of-type(even) {
+    background-color: var(--clr-bg-alt);
 }
 
 .section-header {
