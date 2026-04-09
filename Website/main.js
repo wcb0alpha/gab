@@ -1,80 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('js-ready');
     
-    // 0. Initialize Lenis Smooth Scroll
-    const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        orientation: 'vertical',
-        gestureOrientation: 'vertical',
-        smoothWheel: true,
-        wheelMultiplier: 1,
-        smoothTouch: false,
-        touchMultiplier: 2,
-        infinite: false,
-    });
 
-    function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    // 1. Custom Cursor Tracking
-    const cursor = document.getElementById('cursor');
-    const strobe = document.getElementById('cursor-strobe');
-    let mouseX = 0, mouseY = 0;
-    let cursorX = 0, cursorY = 0;
-
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        
-        // Strobe follows mouse instantly
-        if (strobe) {
-            strobe.style.left = `${mouseX}px`;
-            strobe.style.top = `${mouseY}px`;
-        }
-    });
-
-    // Cursor (outer ring) follows with a slight delay
-    function animateCursor() {
-        cursorX += (mouseX - cursorX) * 0.15;
-        cursorY += (mouseY - cursorY) * 0.15;
-        
-        if (cursor) {
-            cursor.style.left = `${cursorX}px`;
-            cursor.style.top = `${cursorY}px`;
-        }
-        requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
-    // 2. Cursor Hover Interactions & Magnetic Buttons
-    const interactiveElements = document.querySelectorAll('a, button, .service-card, .book-card, .blog-card');
-    
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            cursor.classList.add('active');
-        });
-        el.addEventListener('mouseleave', () => {
-            cursor.classList.remove('active');
-            if (el.classList.contains('magnetic')) {
-                el.style.transform = `translate(0px, 0px)`;
-            }
-        });
-
-        // Magnetic Effect
-        if (el.classList.contains('btn-primary') || el.classList.contains('btn-outline')) {
-            el.classList.add('magnetic');
-            el.addEventListener('mousemove', (e) => {
-                const rect = el.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                el.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-            });
-        }
-    });
 
     // 3. Character-Staggered Text Reveal
     function splitText(element) {
@@ -178,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryContainer.innerHTML = galleryHTML;
         
         // Parallax effect on scroll
-        lenis.on('scroll', () => {
+        window.addEventListener('scroll', () => {
             const items = document.querySelectorAll('.parallax-img');
             items.forEach((item, i) => {
                 const speed = 0.05 + (i % 3) * 0.02;

@@ -44,10 +44,6 @@ body {
     overflow-x: hidden;
 }
 
-body.js-ready {
-    cursor: none; /* Only hide if custom cursor logic is ready */
-}
-
 /* Global Grain Texture */
 .grain-overlay {
     position: fixed;
@@ -73,37 +69,6 @@ body.js-ready .reveal.active .char {
     transform: translateY(0) rotateX(0);
 }
 
-/* Custom Cursor */
-.custom-cursor {
-    width: 20px;
-    height: 20px;
-    border: 1px solid var(--clr-accent);
-    position: fixed;
-    pointer-events: none;
-    z-index: 10000;
-    transform: translate(-50%, -50%);
-    transition: width 0.3s, height 0.3s, border-color 0.3s;
-    mix-blend-mode: difference;
-}
-
-.cursor-strobe {
-    width: 4px;
-    height: 4px;
-    background: var(--clr-accent);
-    position: fixed;
-    pointer-events: none;
-    z-index: 10001;
-    border-radius: 100%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px var(--clr-accent);
-}
-
-.custom-cursor.active {
-    width: 40px;
-    height: 40px;
-    background: rgba(239, 68, 68, 0.1);
-    border-width: 2px;
-}
 
 /* Typography */
 h1, h2, h3 {
