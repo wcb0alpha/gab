@@ -375,6 +375,12 @@ section {
     margin-bottom: 1rem;
 }
 
+.contact-box p {
+    margin-bottom: 3rem;
+    color: var(--clr-text-muted);
+    font-size: 1.1rem;
+}
+
 .form-group {
     margin-bottom: 1.5rem;
 }
