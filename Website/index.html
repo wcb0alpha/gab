@@ -14,16 +14,26 @@
     <div class="grain-overlay"></div>
     <nav class="glass-nav">
         <div class="nav-content">
-            <div class="logo">GAB.</div>
+            <div class="logo" id="nav-logo">GAB.</div>
             <ul class="nav-links" id="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#literature">Literature</a></li>
-                <li><a href="#poems">Poems</a></li>
+                <li class="dropdown">
+                    <a href="#literature">Work</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#literature">Literature</a></li>
+                        <li><a href="#poems">Poems</a></li>
+                    </ul>
+                </li>
                 <li><a href="#services">Services</a></li>
-                <li><a href="#blog">Blog</a></li>
-                <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li class="dropdown">
+                    <a href="#gallery">Journal</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                    </ul>
+                </li>
+                <li><a href="#contact">Connect</a></li>
             </ul>
             <button class="nav-hamburger" id="hamburger" aria-label="Open navigation menu">
                 <span></span><span></span><span></span>
@@ -35,12 +45,19 @@
         <section id="home" class="hero">
             <div class="hero-overlay"></div>
             <div class="hero-content">
-                <h1 class="reveal">GAB<span>.</span></h1>
+                <h1>
+                    <span class="reveal" style="display: block">Grayson</span>
+                    <span class="reveal" style="display: block">Anderson</span>
+                    <span class="reveal" style="display: block">Brown</span>
+                </h1>
                 <p class="reveal-delay">Author • Poet • Life Coach • Voice Over Artist</p>
             </div>
             <div class="cta-scroll">
-                <span>Scroll to explore</span>
-                <div class="arrow"></div>
+                <span>Explore the portfolio</span>
+                <div class="vertical-line"></div>
+            </div>
+            <div class="hero-sparkle">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l1.7 8.3 8.3 1.7-8.3 1.7-1.7 8.3-1.7-8.3-8.3-1.7 8.3-1.7z"/></svg>
             </div>
         </section>
 

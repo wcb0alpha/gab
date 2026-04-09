@@ -98,12 +98,15 @@ span {
 .glass-nav {
     position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
+    padding: 2.5rem 0; /* 40px default */
+    transition: padding 0.3s ease;
     z-index: 1000;
-    padding: 1.5rem 0;
-    background: rgba(10, 12, 16, 0.7);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: background 0.1s linear, backdrop-filter 0.1s linear;
 }
 
 .nav-content {
@@ -119,27 +122,71 @@ span {
     font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: -0.05em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
 }
 
 .nav-links {
     display: flex;
     list-style: none;
     gap: 2.5rem;
+    margin-left: auto;
 }
 
 .nav-links a {
     text-decoration: none;
-    color: var(--clr-text-muted);
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
     font-family: var(--font-mono);
     font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 500;
-    transition: var(--transition-smooth);
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    transition: opacity 0.3s ease, color 0.3s ease;
+    opacity: 0.6;
 }
 
 .nav-links a:hover {
-    color: var(--clr-accent);
+    color: #ffffff;
+    opacity: 1;
+}
+
+/* Dropdowns */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: -1rem;
+    background: rgba(10, 12, 16, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    padding: 1rem 0;
+    min-width: 14rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: var(--transition-smooth);
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.75rem;
 }
 
 /* Hero Section */
@@ -147,54 +194,107 @@ span {
     height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
     position: relative;
-    background-image: url('assets/Final Conceptual Images/image_03_crown_of_whispers_fantasy_1772342768249.png');
+    background-image: url('assets/hero02.jpeg');
     background-size: cover;
-    background-position: center bottom;
+    background-position: center top;
+    background-attachment: fixed; /* Subtle Parallax */
     overflow: hidden;
 }
 
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, transparent 20%, var(--clr-bg) 100%);
-    background-color: rgba(3, 5, 8, 0.4); /* Darken to make text punchier */
+    /* Extra dark gradient at the top to ensure nav visibility, plus a strong heavy edge vignette to separate the meteor */
+    background: linear-gradient(to bottom, rgba(3, 5, 8, 0.8) 0%, transparent 15%),
+                radial-gradient(ellipse at right center, rgba(3, 5, 8, 0) 10%, rgba(3, 5, 8, 0.6) 50%, rgba(3, 5, 8, 0.98) 100%);
+    backdrop-filter: blur(1px); /* Slight Gaussian blur to reduce meteor sharpness */
 }
 
 .hero-content {
     position: relative;
     z-index: 10;
-    max-width: 800px;
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: left;
+    transform: translateX(0); /* Let the shorter words provide natural breathing room */
 }
 
 .hero h1 {
-    font-size: clamp(3.5rem, 12vw, 7rem);
-    margin-bottom: 1rem;
-    text-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 0 50px rgba(255,255,255,0.2);
-    letter-spacing: 0.05em;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: #FFFFFF; /* High contrast secondary letters */
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5); /* Depth masking against the chair */
+    margin-bottom: 0;
+}
+
+/* Base character alignment */
+.hero h1 .char {
+    display: inline-block;
+    vertical-align: baseline;
+}
+
+/* The G-A-B initials punch */
+.hero h1 .char:first-child {
+    font-weight: 900;
+    font-size: 1.5em; /* 150% size of base text */
+    color: #FF3B30;
+    margin-right: -0.04em; /* Tighten kerning between initial and secondary letters */
 }
 
 .hero p {
-    font-size: 1.35rem;
-    color: #ffffff;
-    font-weight: 600;
-    letter-spacing: 0.15em;
+    font-weight: 400;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
-    text-shadow: 0 4px 15px rgba(0,0,0,1);
+    font-size: 1rem;
+    margin-top: 34px;
+    color: #FFFFFF;
 }
 
 .cta-scroll {
     position: absolute;
-    bottom: 3rem;
+    bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    color: var(--clr-text-muted);
+    gap: 0.5rem;
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.cta-scroll span {
+    color: #FFFFFF !important; /* Force high contrast white */
+}
+
+.cta-scroll .vertical-line {
+    width: 1px;
+    height: 40px;
+    background-color: var(--clr-accent); /* Subtle primary red */
+}
+
+.hero-sparkle {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    width: 2rem;
+    height: 2rem;
+    color: rgba(255, 255, 255, 0.4);
+    animation: sparkleSpin 10s linear infinite;
+}
+
+@keyframes sparkleSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 /* Containers */
@@ -877,8 +977,38 @@ footer {
         font-size: 1.2rem;
     }
 
+    .dropdown-menu {
+        position: relative;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        padding-left: 1.5rem;
+        display: none;
+        min-width: unset;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 1rem;
+    }
+
+    .nav-links.open .dropdown-menu {
+        display: flex;
+    }
+
+    .dropdown-menu a {
+        font-size: 1rem;
+        padding: 0.25rem 0;
+    }
+
     /* Hero */
-    .hero h1 { font-size: clamp(3rem, 18vw, 4.5rem); }
+    .hero h1 { font-size: clamp(2rem, 12vw, 3.5rem); letter-spacing: -0.01em; }
+    .hero p { font-size: 0.7rem; letter-spacing: 0.15em; margin-top: 16px; }
+    .hero-content {
+        transform: translateX(0);
+        margin-top: -15vh; /* Push up above chair subject on mobile */
+        text-align: center;
+    }
 
     /* About */
     .about-grid { grid-template-columns: 1fr; gap: 2rem; }

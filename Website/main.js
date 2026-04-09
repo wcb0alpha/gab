@@ -17,7 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const revealTitles = document.querySelectorAll('.reveal');
-    revealTitles.forEach(title => splitText(title));
+    revealTitles.forEach(title => {
+        splitText(title);
+        setTimeout(() => title.classList.add('active'), 100);
+    });
 
     // 4. Interaction Observer for Scroll Animations
     const observerOptions = {
@@ -39,14 +42,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 5. Navbar progressive blur
     const nav = document.querySelector('.glass-nav');
-    window.addEventListener('scroll', () => {
+    const navLogo = document.getElementById('nav-logo');
+    function updateNav() {
         const scrollPercent = Math.min(window.scrollY / 400, 1);
         if (nav) {
-            nav.style.backdropFilter = `blur(${12 + scrollPercent * 20}px)`;
-            nav.style.background = `rgba(10, 12, 16, ${0.7 + scrollPercent * 0.2})`;
-            nav.style.padding = `${1.5 - scrollPercent * 0.5}rem 0`;
+            nav.style.backdropFilter = `blur(${10 + scrollPercent * 5}px)`;
+            nav.style.background = `rgba(10, 12, 16, ${0.2 + scrollPercent * 0.65})`;
+            nav.style.padding = `${2.5 - scrollPercent * 1.0}rem 0`;
+            nav.style.borderBottomColor = `rgba(255, 255, 255, ${scrollPercent * 0.05})`;
         }
-    });
+        if (navLogo) {
+            if (window.scrollY > window.innerHeight * 0.4) {
+                navLogo.style.opacity = '1';
+                navLogo.style.pointerEvents = 'auto';
+            } else {
+                navLogo.style.opacity = '0';
+                navLogo.style.pointerEvents = 'none';
+            }
+        }
+    }
+    window.addEventListener('scroll', updateNav);
+    updateNav(); // Init immediately
 
     // 6. Gallery Parallax & Injection
     const galleryContainer = document.getElementById('gallery-container');
