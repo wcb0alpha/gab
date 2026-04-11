@@ -181,7 +181,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
-        // Parallax effect removed for museum-grade stability
+        // Parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const parallaxImages = document.querySelectorAll('.parallax-img');
+            parallaxImages.forEach((img, i) => {
+                const speed = 0.05 + (i % 3) * 0.02;
+                const rect = img.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    const yPos = (window.scrollY - rect.top) * speed;
+                    img.style.transform = `scale(1.1) translateY(${yPos % 30}px)`;
+                }
+            });
+        });
 
         galleryItems.forEach(el => scrollObserver.observe(el));
     }
@@ -226,7 +237,7 @@ const FALLBACK_POSTS = [
         excerpt: "Exploring the boundary between clinical precision and literary warmth in modern digital interfaces.",
         content: "Design in 2026 is moving away from the loud and chaotic. We are entering an era of 'The Sterile Edge'—where high-contrast, monochromatic layouts meet high-fidelity micro-interactions.",
         imageUrl: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800",
-        createdAt: { toDate: () => new Date(2026, 3, 11) }
+        createdAt: { toDate: () => new Date() }
     },
     {
         title: "South London Noir: A Poet's Field Guide",
@@ -234,7 +245,7 @@ const FALLBACK_POSTS = [
         excerpt: "Walking the rain-slicked streets of Brixton and Peckham in search of the perfect line.",
         content: "South London isn't just a place; it's a cadence. It's the rhythm of the Overground and the low hum of nighttime sirens.",
         imageUrl: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=800",
-        createdAt: { toDate: () => new Date(2026, 3, 8) }
+        createdAt: { toDate: () => new Date(Date.now() - 86400000) }
     },
     {
         title: "Body as Prison: The Full Lyric Essay",
@@ -242,7 +253,7 @@ const FALLBACK_POSTS = [
         excerpt: "An exploration of confinement, physicality, and the liberation found within the written word.",
         content: "If the body is a prison, the mind is its most prolific inmate. We spend our lives testing the bars, mapping the shadows of our own skin.",
         imageUrl: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=800",
-        createdAt: { toDate: () => new Date(2026, 2, 25) }
+        createdAt: { toDate: () => new Date(Date.now() - 172800000) }
     },
     {
         title: "Fragments of a Dying Sun",
@@ -250,7 +261,7 @@ const FALLBACK_POSTS = [
         excerpt: "Recent verses exploring entropy, memory, and the cold light of the future.",
         content: "The light comes in slices now / thin and sharp like a clinical knife / We are keepers of the glow.",
         imageUrl: "https://images.unsplash.com/photo-1506466010722-395aa2bef877?auto=format&fit=crop&q=80&w=800",
-        createdAt: { toDate: () => new Date(2026, 2, 12) }
+        createdAt: { toDate: () => new Date(Date.now() - 259200000) }
     },
     {
         title: "On the Book Edit Writers’ Prize 2025",
@@ -258,18 +269,15 @@ const FALLBACK_POSTS = [
         excerpt: "A personal reflection on the recent honor and what it means for the next chapter of 'Until Time Runs Out'.",
         content: "Winning the Book Edit Writers' Prize 2025 was a moment of profound clarity. After twenty years of writing, this recognition feels less like a finish line and more like a gateway.",
         imageUrl: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&q=80&w=800",
-        createdAt: { toDate: () => new Date(2026, 1, 28) }
+        createdAt: { toDate: () => new Date(Date.now() - 345600000) }
     }
 ];
 
 class JournalInterface {
     constructor() {
         this.posts = [];
-        this.db = null;
         this.currentDate = new Date();
-        // filterMode: 'today' | 'month' | 'day'
-        this.filterMode = 'today';
-        this.selectedDate = null; // 'YYYY-MM-DD'
+        this.selectedDate = null;
         this.isAuth = false;
 
         this.els = {
@@ -289,18 +297,7 @@ class JournalInterface {
         this.els.resetFilter = document.getElementById('reset-filter');
     }
 
-    initializeFirebase() {
-        if (typeof firebaseConfig === 'undefined' || firebaseConfig.projectId === "YOUR_PROJECT_ID") return;
-        try {
-            const app = initializeApp(firebaseConfig);
-            this.db = getFirestore(app);
-        } catch (e) {
-            console.error("Firebase Error //", e);
-        }
-    }
-
     async init() {
-        this.initializeFirebase();
         await this.fetchPosts();
 
         this.renderCalendarFrame(); 
@@ -309,22 +306,16 @@ class JournalInterface {
         this.bindEvents(); 
     }
 
-    // Converts a Date to 'YYYY-MM-DD' in LOCAL time (not UTC)
-    toLocalDateStr(date) {
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const d = String(date.getDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
-    }
-
     async fetchPosts() {
-        if (!this.db) {
+        if (typeof firebaseConfig === 'undefined' || firebaseConfig.projectId === "YOUR_PROJECT_ID") {
             this.posts = FALLBACK_POSTS;
             return;
         }
 
         try {
-            const q = query(collection(this.db, "blog_posts"), orderBy("createdAt", "desc"), limit(50));
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            const q = query(collection(db, "blog_posts"), orderBy("createdAt", "asc"), limit(20));
             
             const querySnapshot = await getDocs(q);
             this.posts = [];
@@ -353,40 +344,6 @@ class JournalInterface {
             </div>
         `;
         this.rebindCalendarElements();
-        // Bind nav events ONCE here — never inside renderCalendar
-        this.bindCalendarNavEvents();
-    }
-
-    bindCalendarNavEvents() {
-        this.els.prevMonth?.addEventListener('click', () => {
-            this.currentDate.setMonth(this.currentDate.getMonth() - 1);
-            this.filterMode = 'month';
-            this.selectedDate = null;
-            this.renderCalendar();
-            this.filterAndRender();
-        });
-        this.els.nextMonth?.addEventListener('click', () => {
-            this.currentDate.setMonth(this.currentDate.getMonth() + 1);
-            this.filterMode = 'month';
-            this.selectedDate = null;
-            this.renderCalendar();
-            this.filterAndRender();
-        });
-        // VIEW ALL: show every post in the currently displayed month
-        this.els.viewAllMonth?.addEventListener('click', () => {
-            this.filterMode = 'month';
-            this.selectedDate = null;
-            this.renderCalendar();
-            this.filterAndRender();
-        });
-        // RESET: return to today and show only today's posts
-        this.els.resetFilter?.addEventListener('click', () => {
-            this.currentDate = new Date();
-            this.filterMode = 'today';
-            this.selectedDate = null;
-            this.renderCalendar();
-            this.filterAndRender();
-        });
     }
 
     renderCalendar() {
@@ -412,8 +369,7 @@ class JournalInterface {
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const hasPosts = this.posts.some(p => {
                 const d = p.createdAt?.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
-                // Use local date comparison to avoid UTC timezone shift
-                return this.toLocalDateStr(d) === dateStr;
+                return d.toISOString().startsWith(dateStr);
             });
             const isSelected = this.selectedDate === dateStr;
             
@@ -422,41 +378,36 @@ class JournalInterface {
         
         this.els.calendarGrid.innerHTML = html;
         
-        // Day clicks — mode switches to 'day'
         this.els.calendarGrid.querySelectorAll('.cal-day:not(.empty)').forEach(el => {
             el.addEventListener('click', (e) => {
                 this.selectedDate = e.target.dataset.date;
-                this.filterMode = 'day';
                 this.renderCalendar();
                 this.filterAndRender();
             });
         });
-        // Note: nav button events are bound ONCE in bindCalendarNavEvents()
+
+        // Nav Binding
+        this.els.prevMonth?.addEventListener('click', () => { this.currentDate.setMonth(this.currentDate.getMonth() - 1); this.renderCalendar(); });
+        this.els.nextMonth?.addEventListener('click', () => { this.currentDate.setMonth(this.currentDate.getMonth() + 1); this.renderCalendar(); });
+        this.els.viewAllMonth?.addEventListener('click', () => { this.selectedDate = null; this.renderCalendar(); this.filterAndRender(); });
+        this.els.resetFilter?.addEventListener('click', () => { this.selectedDate = null; this.renderCalendar(); this.filterAndRender(); });
     }
 
     filterAndRender() {
         let filtered = [...this.posts];
         
-        if (this.filterMode === 'day' && this.selectedDate) {
-            // Show only posts on the exact selected date (local time)
+        // Filter by Temporal Node (Calendar)
+        if (this.selectedDate) {
             filtered = filtered.filter(p => {
                 const d = p.createdAt?.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
-                return this.toLocalDateStr(d) === this.selectedDate;
+                return d.toISOString().startsWith(this.selectedDate);
             });
-        } else if (this.filterMode === 'month') {
-            // Show all posts for the displayed month
+        } else {
             const year = this.currentDate.getFullYear();
             const month = this.currentDate.getMonth();
             filtered = filtered.filter(p => {
                 const d = p.createdAt?.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
                 return d.getFullYear() === year && d.getMonth() === month;
-            });
-        } else {
-            // 'today' — default mode; only show today's posts
-            const todayStr = this.toLocalDateStr(new Date());
-            filtered = filtered.filter(p => {
-                const d = p.createdAt?.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
-                return this.toLocalDateStr(d) === todayStr;
             });
         }
         
@@ -467,104 +418,64 @@ class JournalInterface {
         if (!this.els.grid) return;
         let html = '';
 
-        // 1. Render Archival Output Boxes (Now Fully 3D Interactive)
+        // Render archival cards — Moody Archive portrait style
         posts.forEach((post) => {
             const dateStr = post.createdAt?.toDate
-                ? post.createdAt.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                : 'Archive // Sync';
+                ? post.createdAt.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+                : 'LOG';
 
             const mediaContent = post.imageUrl 
-                ? `<div class="elite-card-media" style="background-image: url('${post.imageUrl}'); background-size: cover; background-position: center;"></div>`
-                : `<div class="elite-card-media"><blockquote>"${post.excerpt ? post.excerpt.substring(0, 60) : 'Archive Sync'}..."</blockquote></div>`;
+                ? `<div class="journal-media" style="background-image: url('${post.imageUrl}'); background-size: cover; background-position: center;"></div>`
+                : `<div class="journal-media"><blockquote>"${post.excerpt ? post.excerpt.substring(0, 65) : 'ARCHIVE_SYNC'}..."</blockquote></div>`;
 
             html += `
-                <article class="elite-card animate-on-scroll">
-                    <div class="flip-card-inner">
-                        <div class="card-front">
-                            ${mediaContent}
-                            <div class="elite-card-info">
-                                <div class="elite-meta-row">
-                                    <span class="elite-badge">${post.category || 'Log'}</span>
-                                    <span class="elite-date">${dateStr}</span>
-                                </div>
-                                <h3 class="elite-title">${post.title || 'Untitled Transmission'}</h3>
-                                <p class="elite-content">${post.excerpt || post.content?.substring(0, 100) + '...' || ''}</p>
-                                <span class="read-more-trigger">Read More <i class='bx bx-right-arrow-alt'></i></span>
-                            </div>
+                <div class="journal-card animate-on-scroll">
+                    ${mediaContent}
+                    <div class="journal-info">
+                        <div class="card-meta">
+                            <span class="badge-pill">${(post.category || 'LOG').toUpperCase()}</span>
                         </div>
-                        
-                        <div class="card-back">
-                            <h3 style="font-family: var(--font-mono); font-size: 0.7rem; color: #ff3b30; letter-spacing: 1px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; text-transform: uppercase;">
-                                // ${post.title || 'READOUT'}
-                            </h3>
-                            
-                            <div class="full-content-scroll" onclick="event.stopPropagation()">
-                                ${post.content || post.excerpt || 'No additional data available.'}
-                            </div>
-                            
-                            <button class="btn-terminal small close-flip-btn" style="width: 100%; margin-top: auto; border-color: rgba(255, 59, 48, 0.4); color: rgba(255, 255, 255, 0.7);">Close Readout</button>
-                        </div>
+                        <h3>${post.title || 'Untitled Transmission'}</h3>
+                        <p class="excerpt">${post.excerpt || ''}</p>
                     </div>
-                </article>`;
+                </div>`;
         });
 
-        // 2. Render The Input Box (Synchronized with Output Structure)
-        // 3D Flip Terminal — Ultra Minimal Front
+        // 3D Flip Terminal — Vertical Portrait Orientation
         html += `
-            <div class="elite-card input-card animate-on-scroll" id="new-entry-card">
+            <div class="journal-card input-card animate-on-scroll" id="new-entry-card">
                 <div class="flip-card-inner">
-                    <div class="card-front new-entry-front">
-                        <i class='bx bx-plus-circle'></i>
-                        <h3>Add New Entry</h3>
+                    <div class="card-front">
+                        <div class="journal-media" style="border-style: dashed; background: rgba(239, 68, 68, 0.05);">
+                            <i class='bx bx-plus-circle' style="font-size: 1.5rem; color: #ef4444;"></i>
+                        </div>
+                        <span class="eyebrow" style="font-size: 0.45rem; margin-top: 5px;">INITIATE_ENTRY</span>
                     </div>
-                    
                     <div class="card-back">
                         <span class="new-badge">// TERMINAL_ACTIVE</span>
-                        
-                        <input type="text" id="grid-entry-category" class="ghost-field" placeholder="GENRE // CATEGORY" onclick="event.stopPropagation()">
-                        <input type="text" id="grid-entry-image" class="ghost-field" placeholder="MEDIA // IMAGE URL" onclick="event.stopPropagation()">
                         <input type="text" id="grid-entry-title" class="ghost-field" placeholder="ID // TITLE" onclick="event.stopPropagation()">
-                        
-                        <textarea id="grid-entry-message" class="ghost-field" placeholder="TRANSMIT // MESSAGE" style="resize:none;" onclick="event.stopPropagation()"></textarea>
-                        
-                        <div style="display:flex; gap: 10px; margin-top: auto;">
-                            <button class="btn-terminal small btn-cancel close-flip-btn" style="flex: 1;" onclick="event.stopPropagation()">Cancel</button>
-                            <button id="grid-dispatch-btn" class="btn-terminal small" style="flex: 1;" onclick="event.stopPropagation()">Confirm</button>
-                        </div>
+                        <textarea id="grid-entry-message" class="ghost-field" placeholder="TRANSMIT // MESSAGE" rows="8" style="resize:none;" onclick="event.stopPropagation()"></textarea>
+                        <button id="grid-dispatch-btn" class="btn-terminal small" onclick="event.stopPropagation()">DISPATCH</button>
                     </div>
                 </div>
             </div>
         `;
 
+        if (posts.length === 0) {
+            html = `<div class="blog-error" style="grid-column: 1 / -1; display:flex; align-items:center; justify-content:center; height:300px;">No archival records found for this period.</div>` + html;
+        }
+
         this.els.grid.innerHTML = html;
 
-        // 3. Bind Universal Flip Logic for ALL cards
-        document.querySelectorAll('.elite-card').forEach(card => {
-            // Flip on card click (ignoring inner inputs/buttons)
-            card.addEventListener('click', (e) => {
-                if (e.target.tagName.toLowerCase() === 'input' || 
-                    e.target.tagName.toLowerCase() === 'textarea' || 
-                    e.target.classList.contains('full-content-scroll')) return;
-                card.classList.toggle('flipped');
-            });
-            
-            // Explicit close button binding
-            const closeBtn = card.querySelector('.close-flip-btn');
-            if(closeBtn) {
-                closeBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    card.classList.remove('flipped');
-                });
-            }
-        });
+        // Bind 3D flip interaction
+        const entryCard = document.getElementById('new-entry-card');
+        entryCard?.addEventListener('click', () => entryCard.classList.toggle('flipped'));
 
-        // 4. Bind Upgraded Dispatch Logic
+        // Bind dispatch logic
         const dispatchBtn = document.getElementById('grid-dispatch-btn');
         dispatchBtn?.addEventListener('click', async (e) => {
             e.stopPropagation();
             const titleField = document.getElementById('grid-entry-title');
-            const categoryField = document.getElementById('grid-entry-category');
-            const imageField = document.getElementById('grid-entry-image');
             const messageField = document.getElementById('grid-entry-message');
 
             if (!titleField.value || !messageField.value) {
@@ -572,35 +483,28 @@ class JournalInterface {
                 return;
             }
 
-            dispatchBtn.innerText = "SYNCING...";
+            dispatchBtn.innerText = "AUTHENTICATING...";
             dispatchBtn.disabled = true;
 
             try {
-                await addDoc(collection(this.db, "blog_posts"), {
+                await addDoc(collection(db, "blog_posts"), {
                     title: titleField.value,
-                    category: categoryField.value || "Log",
-                    imageUrl: imageField.value || "",
+                    category: "TRANSMISSION",
                     content: messageField.value,
                     excerpt: messageField.value.substring(0, 80) + '...',
                     createdAt: serverTimestamp()
                 });
 
-                // Clear & Refresh
                 titleField.value = '';
-                categoryField.value = '';
-                imageField.value = '';
                 messageField.value = '';
-                
-                this.filterMode = 'today';
-                this.selectedDate = null;
+                entryCard.classList.remove('flipped');
                 await this.fetchPosts();
-                this.renderCalendar();
                 this.filterAndRender();
 
             } catch (err) {
                 console.error("Transmission failed", err);
                 alert("TRANSMISSION FAILED: " + err.message);
-                dispatchBtn.innerText = "Confirm";
+                dispatchBtn.innerText = "DISPATCH";
                 dispatchBtn.disabled = false;
             }
         });

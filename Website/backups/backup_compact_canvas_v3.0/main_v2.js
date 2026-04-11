@@ -181,7 +181,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
-        // Parallax effect removed for museum-grade stability
+        // Parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const parallaxImages = document.querySelectorAll('.parallax-img');
+            parallaxImages.forEach((img, i) => {
+                const speed = 0.05 + (i % 3) * 0.02;
+                const rect = img.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    const yPos = (window.scrollY - rect.top) * speed;
+                    img.style.transform = `scale(1.1) translateY(${yPos % 30}px)`;
+                }
+            });
+        });
 
         galleryItems.forEach(el => scrollObserver.observe(el));
     }
@@ -467,70 +478,49 @@ class JournalInterface {
         if (!this.els.grid) return;
         let html = '';
 
-        // 1. Render Archival Output Boxes (Now Fully 3D Interactive)
         posts.forEach((post) => {
             const dateStr = post.createdAt?.toDate
-                ? post.createdAt.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-                : 'Archive // Sync';
+                ? post.createdAt.toDate().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()
+                : 'ARCHIVE // SYNC';
 
-            const mediaContent = post.imageUrl 
-                ? `<div class="elite-card-media" style="background-image: url('${post.imageUrl}'); background-size: cover; background-position: center;"></div>`
-                : `<div class="elite-card-media"><blockquote>"${post.excerpt ? post.excerpt.substring(0, 60) : 'Archive Sync'}..."</blockquote></div>`;
+            // Respecting the "Compact" media area: prioritize quotes or short descriptors
+            const mediaContent = `<div class="elite-card-media"><blockquote>"${post.excerpt ? post.excerpt.substring(0, 65) : 'ARCHIVE_SYNC'}..."</blockquote></div>`;
 
             html += `
                 <article class="elite-card animate-on-scroll">
-                    <div class="flip-card-inner">
-                        <div class="card-front">
-                            ${mediaContent}
-                            <div class="elite-card-info">
-                                <div class="elite-meta-row">
-                                    <span class="elite-badge">${post.category || 'Log'}</span>
-                                    <span class="elite-date">${dateStr}</span>
-                                </div>
-                                <h3 class="elite-title">${post.title || 'Untitled Transmission'}</h3>
-                                <p class="elite-content">${post.excerpt || post.content?.substring(0, 100) + '...' || ''}</p>
-                                <span class="read-more-trigger">Read More <i class='bx bx-right-arrow-alt'></i></span>
-                            </div>
+                    ${mediaContent}
+                    <div class="elite-card-info">
+                        <div class="elite-meta-row">
+                            <span class="elite-badge">${(post.category || 'LOG').toUpperCase()}</span>
+                            <span class="elite-date">${dateStr}</span>
                         </div>
-                        
-                        <div class="card-back">
-                            <h3 style="font-family: var(--font-mono); font-size: 0.7rem; color: #ff3b30; letter-spacing: 1px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; text-transform: uppercase;">
-                                // ${post.title || 'READOUT'}
-                            </h3>
-                            
-                            <div class="full-content-scroll" onclick="event.stopPropagation()">
-                                ${post.content || post.excerpt || 'No additional data available.'}
-                            </div>
-                            
-                            <button class="btn-terminal small close-flip-btn" style="width: 100%; margin-top: auto; border-color: rgba(255, 59, 48, 0.4); color: rgba(255, 255, 255, 0.7);">Close Readout</button>
-                        </div>
+                        <h3 class="elite-title">${post.title || 'Untitled Transmission'}</h3>
+                        <p class="elite-content">${post.content || ''}</p>
                     </div>
                 </article>`;
         });
 
-        // 2. Render The Input Box (Synchronized with Output Structure)
-        // 3D Flip Terminal — Ultra Minimal Front
+        // 3D Flip Terminal — Compact Adaptation (rows="3")
         html += `
             <div class="elite-card input-card animate-on-scroll" id="new-entry-card">
                 <div class="flip-card-inner">
-                    <div class="card-front new-entry-front">
-                        <i class='bx bx-plus-circle'></i>
-                        <h3>Add New Entry</h3>
+                    <div class="card-front">
+                        <div class="elite-card-media" style="background: rgba(239, 68, 68, 0.03);">
+                            <i class='bx bx-plus-circle' style="font-size: 2rem; color: #ef4444; margin-bottom: 10px;"></i>
+                            <span class="placeholder-text" style="color: #ef4444; opacity: 0.6;">INITIATE_ENTRY</span>
+                        </div>
+                        <div class="elite-card-info">
+                             <div class="elite-meta-row">
+                                <span class="elite-badge" style="background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4);">NEW_LOG</span>
+                            </div>
+                            <h3 class="elite-title">Add Entry</h3>
+                        </div>
                     </div>
-                    
                     <div class="card-back">
                         <span class="new-badge">// TERMINAL_ACTIVE</span>
-                        
-                        <input type="text" id="grid-entry-category" class="ghost-field" placeholder="GENRE // CATEGORY" onclick="event.stopPropagation()">
-                        <input type="text" id="grid-entry-image" class="ghost-field" placeholder="MEDIA // IMAGE URL" onclick="event.stopPropagation()">
                         <input type="text" id="grid-entry-title" class="ghost-field" placeholder="ID // TITLE" onclick="event.stopPropagation()">
-                        
-                        <textarea id="grid-entry-message" class="ghost-field" placeholder="TRANSMIT // MESSAGE" style="resize:none;" onclick="event.stopPropagation()"></textarea>
-                        
-                        <div style="display:flex; gap: 10px; margin-top: auto;">
-                            <button class="btn-terminal small btn-cancel close-flip-btn" style="flex: 1;" onclick="event.stopPropagation()">Cancel</button>
-                            <button id="grid-dispatch-btn" class="btn-terminal small" style="flex: 1;" onclick="event.stopPropagation()">Confirm</button>
-                        </div>
+                        <textarea id="grid-entry-message" class="ghost-field" placeholder="TRANSMIT // MESSAGE" rows="3" style="resize:none;" onclick="event.stopPropagation()"></textarea>
+                        <button id="grid-dispatch-btn" class="btn-terminal small" onclick="event.stopPropagation()">DISPATCH</button>
                     </div>
                 </div>
             </div>
@@ -538,33 +528,15 @@ class JournalInterface {
 
         this.els.grid.innerHTML = html;
 
-        // 3. Bind Universal Flip Logic for ALL cards
-        document.querySelectorAll('.elite-card').forEach(card => {
-            // Flip on card click (ignoring inner inputs/buttons)
-            card.addEventListener('click', (e) => {
-                if (e.target.tagName.toLowerCase() === 'input' || 
-                    e.target.tagName.toLowerCase() === 'textarea' || 
-                    e.target.classList.contains('full-content-scroll')) return;
-                card.classList.toggle('flipped');
-            });
-            
-            // Explicit close button binding
-            const closeBtn = card.querySelector('.close-flip-btn');
-            if(closeBtn) {
-                closeBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    card.classList.remove('flipped');
-                });
-            }
-        });
+        // Bind 3D flip interaction
+        const entryCard = document.getElementById('new-entry-card');
+        entryCard?.addEventListener('click', () => entryCard.classList.toggle('flipped'));
 
-        // 4. Bind Upgraded Dispatch Logic
+        // Bind dispatch logic
         const dispatchBtn = document.getElementById('grid-dispatch-btn');
         dispatchBtn?.addEventListener('click', async (e) => {
             e.stopPropagation();
             const titleField = document.getElementById('grid-entry-title');
-            const categoryField = document.getElementById('grid-entry-category');
-            const imageField = document.getElementById('grid-entry-image');
             const messageField = document.getElementById('grid-entry-message');
 
             if (!titleField.value || !messageField.value) {
@@ -572,25 +544,28 @@ class JournalInterface {
                 return;
             }
 
-            dispatchBtn.innerText = "SYNCING...";
+            if (!this.db) {
+                alert("DATABASE_NOT_SYNCED: Connection with the archival core is missing.");
+                return;
+            }
+
+            dispatchBtn.innerText = "AUTHENTICATING...";
             dispatchBtn.disabled = true;
 
             try {
                 await addDoc(collection(this.db, "blog_posts"), {
                     title: titleField.value,
-                    category: categoryField.value || "Log",
-                    imageUrl: imageField.value || "",
+                    category: "TRANSMISSION",
                     content: messageField.value,
                     excerpt: messageField.value.substring(0, 80) + '...',
                     createdAt: serverTimestamp()
                 });
 
-                // Clear & Refresh
                 titleField.value = '';
-                categoryField.value = '';
-                imageField.value = '';
                 messageField.value = '';
+                entryCard.classList.remove('flipped');
                 
+                // Clear state and refresh
                 this.filterMode = 'today';
                 this.selectedDate = null;
                 await this.fetchPosts();
@@ -600,7 +575,7 @@ class JournalInterface {
             } catch (err) {
                 console.error("Transmission failed", err);
                 alert("TRANSMISSION FAILED: " + err.message);
-                dispatchBtn.innerText = "Confirm";
+                dispatchBtn.innerText = "DISPATCH";
                 dispatchBtn.disabled = false;
             }
         });

@@ -110,23 +110,21 @@ span {
 }
 
 .nav-content {
-    max-width: 100%; /* Breaks out of the 1100px constraint */
+    max-width: var(--container-max);
     margin: 0 auto;
-    padding: 0 5%; /* Generous, scalable edge padding */
+    padding: 0 2rem;
     display: flex;
-    justify-content: space-between; /* Forces strict Left/Right alignment */
+    justify-content: space-between;
     align-items: center;
 }
 
 .logo {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: -0.05em;
-    color: #ffffff;
-    
-    /* Always-On Logo */
-    opacity: 1 !important; 
-    pointer-events: auto !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
 }
 
 .nav-links {
@@ -138,44 +136,20 @@ span {
 
 .nav-links a {
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     font-family: var(--font-mono);
-    font-size: 0.75rem; /* Slightly smaller for clinical precision */
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
     font-weight: 700;
-    padding-bottom: 6px; /* Space for the underline */
-    position: relative;
-    transition: opacity 0.4s ease, color 0.4s ease;
+    transition: opacity 0.3s ease, color 0.3s ease;
+    opacity: 0.9;
 }
 
-/* --- THE PREMIUM HOVER EFFECTS --- */
-
-/* 1. The Tactical Line */
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0%;
-    height: 1px; /* Crisp line */
-    background-color: #ef4444; /* Vercel Red */
-    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* 2. The Focus Dimmer (Dims all links when the container is hovered) */
-.nav-links:hover a {
-    opacity: 0.3; 
-}
-
-/* 3. Illuminates the specific link being hovered & draws the line */
 .nav-links a:hover {
     color: #ffffff;
     opacity: 1;
-}
-
-.nav-links a:hover::after {
-    width: 100%;
 }
 
 /* Dropdowns */
@@ -419,37 +393,14 @@ section:nth-of-type(even) {
     object-position: top;
 }
 
-/* =========================================
-   LITERATURE: FLUID 4-COLUMN GRID
-   ========================================= */
+/* Book Grid */
 .book-grid {
     display: grid;
-    /* Uses fluid fractions so the 4 columns perfectly fill the container */
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 30px; /* Tightened slightly from 48px so 4 columns breathe well */
+    grid-template-columns: repeat(4, 220px); /* Fixed width for elite feel */
+    justify-content: center; 
+    gap: 48px;
     margin-top: 40px;
     align-items: start;
-}
-
-/* --- Responsive Stacking Logic --- */
-
-/* Tablet (max 1024px): Stack to 2 columns */
-@media (max-width: 1024px) {
-    .book-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 40px;
-    }
-}
-
-/* Mobile (max 768px): Stack to 1 column */
-@media (max-width: 768px) {
-    .book-grid { 
-        grid-template-columns: 1fr; 
-        gap: 30px; 
-    }
-    .book-media { 
-        height: 280px; 
-    }
 }
 
 /* =========================================
@@ -539,25 +490,35 @@ section:nth-of-type(even) {
     margin-top: 2rem;
 }
 
-/* =========================================
-   SERVICES GRID (UNIFIED ELITE CARDS)
-   ========================================= */
+/* Services */
 .services-grid {
-    display: flex;
-    justify-content: center;
-    gap: 60px; /* Premium breathing room */
-    margin-top: 20px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
 }
 
-.services-grid .elite-card {
-    width: 280px; /* Capped width for clinical precision */
-    min-height: 340px; /* Ensures buttons align perfectly at the bottom */
-}
-
-/* Removes the old bulky hover logic since .elite-card handles it now */
 .service-card {
-    display: none; 
+    padding: 3rem;
+    background: var(--clr-surface);
+    border-radius: 2rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: var(--transition-smooth);
+}
+
+.service-card:hover {
+    border-color: var(--clr-accent);
+    transform: scale(1.02);
+}
+
+.service-card .icon {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+
+.service-card h3 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
 }
 
 /* --- Contact: Split Editorial & Floating Labels --- */
@@ -848,73 +809,36 @@ footer {
     font-size: 0.9rem;
 }
 
-
-
-
-/* =========================================
-   VISUALS: CONCEPTUAL GALLERY WORKSTATION
-   ========================================= */
-
-.gallery-split {
-    display: grid;
-    /* Tighter widths: 280px sidebar | Capped 800px Viewer */
-    grid-template-columns: 280px minmax(auto, 800px); 
-    gap: 40px; /* Reduced gap to keep the UI connected */
-    align-items: start;
-    justify-content: center;
-    margin-top: 50px;
+/* Gallery Section (Masonry) */
+.gallery {
+    background: var(--clr-bg);
 }
 
-/* --- 1. The Thumbnail Palette (Left) --- */
-.gallery-sidebar {
-    height: 600px; /* Switched to fixed height to enforce the scroll boundary */
-    overflow-y: auto;
-    padding-right: 15px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    
-    /* CRITICAL FIX: Forces rows to be exactly 125px tall, stopping the 'squish' */
-    grid-auto-rows: 125px; 
-    gap: 12px;
-    
-    scrollbar-width: thin;
-    scrollbar-color: rgba(239, 68, 68, 0.4) transparent;
+.gallery-grid {
+    column-count: 3;
+    column-gap: 1.5rem;
+    padding-top: 2rem;
 }
 
-/* Delicate Webkit Scrollbar */
-.gallery-sidebar::-webkit-scrollbar { width: 3px; }
-.gallery-sidebar::-webkit-scrollbar-track { background: transparent; }
-.gallery-sidebar::-webkit-scrollbar-thumb {
-    background: rgba(239, 68, 68, 0.3);
-    border-radius: 10px;
-    transition: background 0.3s ease;
-}
-.gallery-sidebar:hover::-webkit-scrollbar-thumb {
-    background: rgba(239, 68, 68, 0.8);
-}
-
-/* Perfect Square Thumbnails */
 .gallery-item {
-    width: 100%;
-    height: 100%;
-    border-radius: 6px;
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
     overflow: hidden;
     position: relative;
-    border: 1px solid transparent;
-    transition: var(--transition-smooth);
 }
 
 .gallery-item img {
     width: 100%;
-    height: 100%;
-    object-fit: cover; /* Perfectly crops the image to fill the 125px square */
-    filter: grayscale(40%) brightness(0.7);
+    height: auto;
+    display: block;
+    transition: var(--transition-smooth);
+    filter: grayscale(20%) brightness(0.9);
     cursor: pointer;
-    transition: filter 0.4s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .gallery-item.active-thumbnail {
-    border-color: var(--clr-accent);
+    border: 1px solid var(--clr-accent);
     box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
 }
 
@@ -922,7 +846,61 @@ footer {
     filter: grayscale(0%) brightness(1.1);
 }
 
-/* --- 2. The Main Canvas Focal Point (Right) --- */
+.gallery-item:hover img {
+    transform: scale(1.05);
+    filter: grayscale(0%) brightness(1.1);
+}
+
+.gallery-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(239, 68, 68, 0.4), transparent);
+    opacity: 0;
+    transition: var(--transition-smooth);
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+/* Gallery Split Layout (Workstation) */
+.gallery-split {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 3rem;
+    align-items: start;
+    margin-top: 3rem;
+}
+
+.gallery-sidebar {
+    max-height: 85vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+    padding-right: 1.5rem;
+    /* Use Grid instead of column-count to fix scrolling conflict */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--clr-accent) rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbar for Sidebar */
+.gallery-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.gallery-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.gallery-sidebar::-webkit-scrollbar-thumb {
+    background: var(--clr-accent);
+    border-radius: 10px;
+}
+
 .gallery-main.viewer-sticky {
     position: sticky;
     top: 120px;
@@ -930,42 +908,42 @@ footer {
 
 .gallery-viewer {
     position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 3; /* Taller, classic gallery canvas ratio */
-    background: radial-gradient(circle at center, #0e1520 0%, #000000 100%);
-    
-    /* The Crimson Focal Border */
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-top: 1px solid rgba(239, 68, 68, 0.6); 
-    border-bottom: 1px solid rgba(239, 68, 68, 0.1); 
-    border-radius: 8px;
+    aspect-ratio: 16/9;
+    background: var(--clr-surface);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.5rem;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    /* The Focal Glow: A deep red aura mixed with a heavy drop shadow */
-    box-shadow: 0 0 50px rgba(239, 68, 68, 0.08), 0 30px 60px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
 }
 
 .gallery-viewer img {
     width: 100%;
     height: 100%;
-    object-fit: contain; 
-    background: transparent;
-    transition: opacity 0.5s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    object-fit: contain;
+    background: #000;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Add this to index.css to refine the text overlay in the viewer */
+.gallery-viewer img.swapping {
+    opacity: 0;
+    filter: blur(10px) brightness(1.5);
+    transform: scale(1.05);
+}
+
 .viewer-observation {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: 60px 40px 30px 40px; /* Taller gradient fade, tighter side padding */
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 50%, transparent 100%);
+    padding: 2.5rem 2rem 2rem;
+    background: linear-gradient(to top, rgba(3, 5, 8, 0.95) 0%, rgba(3, 5, 8, 0.8) 60%, transparent 100%);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     z-index: 10;
-    pointer-events: none; /* Allows users to right-click/save the image through the text */
+    transform: translateY(0);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .observation-meta {
@@ -989,10 +967,12 @@ footer {
 }
 
 #observation-text {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.6);
-    max-width: 80%; /* Prevents text from hitting the right edge */
+    font-size: 0.9rem;
+    color: var(--clr-text-muted);
+    max-width: 600px;
     line-height: 1.6;
+    height: auto; /* Allow dynamic growth */
+    min-height: 3em;
 }
 
 /* Technical detail - Typing cursor blink */
@@ -1260,37 +1240,36 @@ footer {
 }
 
 /* =========================================
-   JOURNAL: GOLD STANDARD (COMPACT & SPACIOUS)
+   JOURNAL: GOLD STANDARD MOODY ARCHIVE
    ========================================= */
 
 /* --- 1. Layout: Centered & Spacious --- */
 .blog .container-wide {
-    max-width: 1400px;
+    max-width: 1500px;
     margin: 0 auto;
-    padding: 0 5%;
+    padding: 0 60px;
 }
 
-/* --- 1. Layout: Shrink Calendar & Center --- */
 .blog-layout-split {
     display: grid;
-    grid-template-columns: 220px 1fr; /* Reduced from 280px to shrink calendar */
-    gap: 60px; /* Tighter gap to keep everything centered */
+    grid-template-columns: 400px 1fr; /* Strict workstation split */
+    gap: 100px;
     align-items: start;
 }
 
-/* --- 2. Compact Tactical Calendar --- */
+/* --- 2. Tactical Sidebar --- */
 .calendar-panel {
     position: sticky;
     top: 120px;
-    padding: 12px; /* Tighter internal padding */
+    padding: 22px;
     background: rgba(14, 21, 32, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
+    border-radius: 12px;
     backdrop-filter: blur(15px);
 }
 
 .calendar-nav {
-    margin-bottom: 12px;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1299,16 +1278,15 @@ footer {
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 4px; /* Tighter gaps between days */
+    gap: 8px;
 }
 
 .cal-day-label {
     font-family: var(--font-mono);
-    font-size: 0.5rem; /* Shrunk label */
+    font-size: 0.55rem;
     color: rgba(255, 255, 255, 0.2);
     text-transform: uppercase;
     text-align: center;
-    margin-bottom: 4px;
 }
 
 .cal-day {
@@ -1316,7 +1294,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.5rem; /* Shrunk numbers further */
+    font-size: 0.6rem;
     color: rgba(255, 255, 255, 0.3);
     font-family: var(--font-mono);
     cursor: pointer;
@@ -1336,305 +1314,174 @@ footer {
     border-color: var(--clr-accent) !important;
 }
 
-/* --- 3. The Spacious Archive Grid --- */
+.calendar-actions-mini {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* --- 3. The Moody Archive Grid --- */
 .content-column {
     flex: 1;
 }
 
-/* --- 1. Widen the Grid for Breathing Room --- */
-/* =========================================
-   1. LAYOUT GRID (BUG FIX: THE BUFFER)
-   ========================================= */
 .blog-grid {
     display: grid;
-    grid-template-columns: repeat(3, 260px);
-    gap: 40px;
+    grid-template-columns: repeat(3, 200px);
+    gap: 20px;
     justify-content: start;
-    /* EXPANDED BUFFER: Adds a 30px safety zone top and bottom 
-       to prevent cards from clipping when they lift. */
-    padding: 30px 0; 
 }
 
-/* =========================================
-   2. THE FULL BLEED EDITORIAL CANVAS
-   ========================================= */
-
-.elite-card {
-    width: 100%;
-    /* Gradient adjusted slightly for shorter height */
-    background: radial-gradient(120% 100% at 50% 0%, rgba(200, 210, 220, 0.12) 0%, rgba(0, 0, 0, 1) 60%);
-    background-color: #000000;
+/* --- 4. The Moody Card Module --- */
+.journal-card {
+    width: 200px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(15, 20, 29, 0.6) 100%);
+    background-color: #0d1117;
     border-radius: 12px;
-    
-    /* CRITICAL FIX: Removed ALL container padding to allow full-bleed image */
-    padding: 0 !important; 
-    
+    padding: 12px;
     border: 1px solid rgba(255, 255, 255, 0.03);
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.15); /* The Premium Rim Light */
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
-    
-    /* BREATHING ROOM: Slight bump from 280px for extra vertical space */
-    min-height: 310px; 
-    height: 100%;
-    perspective: 1200px;
-    
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* 2. The Flip Engine */
+.journal-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: rgba(255, 77, 77, 0.4);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+/* --- 5. The Media Area (2:3 Portrait Slab) --- */
+.journal-media {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    background: radial-gradient(circle at center, #1c2331 0%, #06080a 100%);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+}
+
+.journal-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.journal-media blockquote {
+    font-family: var(--font-main);
+    font-size: 0.75rem;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    font-style: italic;
+    z-index: 2;
+}
+
+/* --- 6. Vibrant Badges & Premium Typography --- */
+.card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.badge-pill {
+    background: #ef4444;
+    color: #ffffff;
+    border-radius: 50px;
+    font-size: 0.55rem;
+    padding: 3px 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    border: none;
+}
+
+.card-date {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.6rem;
+    font-family: var(--font-mono);
+}
+
+.journal-card h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #ffffff;
+    margin: 10px 0 5px 0;
+    font-family: var(--font-main);
+}
+
+.journal-card .excerpt {
+    font-size: 0.7rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.4);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* --- 7. 3D Flip Card: Portrait Scale --- */
+.input-card {
+    perspective: 1200px;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+}
+
 .flip-card-inner {
     position: relative;
     width: 100%;
     height: 100%;
     transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     transform-style: preserve-3d;
+    cursor: pointer;
 }
 
-.elite-card.flipped .flip-card-inner {
+.input-card.flipped .flip-card-inner {
     transform: rotateY(180deg);
 }
 
-/* --- 3D Flip Card Inner Faces --- */
 .card-front, .card-back {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
     border-radius: 12px;
-    padding: 0; 
-    background: linear-gradient(180deg, rgba(30, 35, 45, 0.25) 0%, #000000 60%);
-    background-color: #000000;
-    border: 1px solid rgba(255, 255, 255, 0.02);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
+    padding: 12px;
 }
 
-/* --- The Ultra-Minimal "Drop Zone" (Front of Input Card) --- */
-.new-entry-front {
+.card-front {
+    background: #0d1117;
+    border: 1px dashed rgba(239, 68, 68, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    background: rgba(239, 68, 68, 0.02) !important;
-    border: 1px dashed rgba(239, 68, 68, 0.3) !important;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    align-items: center;
 }
 
-.new-entry-front:hover {
-    background: rgba(239, 68, 68, 0.06) !important;
-    border-color: rgba(239, 68, 68, 0.8) !important;
-    transform: scale(1.02); /* Slight pulse to encourage click */
-}
-
-.new-entry-front i {
-    font-size: 3rem;
-    color: #ef4444;
-    margin-bottom: 20px;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.new-entry-front:hover i {
-    transform: scale(1.1) rotate(90deg); /* Playful interactive spin */
-}
-
-.new-entry-front h3 {
-    font-family: var(--font-mono);
-    color: #ef4444;
-    font-size: 1rem;
-    letter-spacing: 2px;
-    margin: 0;
-}
-
-/* Back Face Specifics: Flip + padding (no full-bleed media on back) */
 .card-back {
+    background: #0d1117;
+    border: 1px solid #ef4444;
     transform: rotateY(180deg);
-    padding: 24px 24px 30px 24px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* The Hover Physics (Applies to the inner wrapper to preserve 3D origin) */
-.elite-card:hover .flip-card-inner {
-    transform: translateY(-8px);
-}
-.elite-card.flipped:hover .flip-card-inner {
-    transform: translateY(-8px) rotateY(180deg);
-}
-.elite-card:hover .card-front, 
-.elite-card:hover .card-back {
-    border-top: 1px solid rgba(239, 68, 68, 0.4);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
-}
-
-/* --- 3. The SEAMLESS Media Box (Full Bleed) --- */
-.elite-card-media {
-    width: 100%;
-    height: 110px; /* Locked height for horizontal alignment */
-    min-height: 110px;
-    margin-bottom: 0; /* Tightened: removed gap below image */
-    display: flex;
-    align-items: center; /* Centered blockquote if no image */
-    justify-content: center;
-    position: relative;
-    
-    /* Seamless Rules: Removed borders and gap */
-    border: none !important;
-    border-radius: 12px 12px 0 0; /* Rounded top corners ONLY */
-    overflow: hidden;
-    background-color: transparent;
-    
-    /* Subtle separation line only if there's no quote */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
-}
-
-/* Increases the image height specifically for the Services section */
-.services-grid .elite-card-media {
-    height: 160px; /* Up from 110px for a cinematic 16:9 feel */
-    min-height: 160px;
-}
-
-.elite-card-media blockquote {
-    font-family: var(--font-primary);
-    font-size: 1.1rem; 
-    font-weight: 500;
-    font-style: italic;
-    color: #ffffff;
-    text-align: center;
-    line-height: 1.6; 
-    letter-spacing: 0.02em; 
-    padding: 0 10px; 
-    margin: 0;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-}
-
-/* --- 4. THE PADDED INFO CONTAINER (Text Only) --- */
-.elite-card-info {
     display: flex;
     flex-direction: column;
-    flex: 1; /* Fills all remaining vertical space */
-    padding: 20px 24px 30px 24px; /* 30px bottom = breathing room for Read More anchor */
 }
 
-/* --- THE METADATA SPLIT (Left / Right) --- */
-.elite-meta-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Pushes Category Left, Date Right */
-    margin-bottom: 12px;
-    margin-top: 0; /* Reset since it's inside the padded info container */
-    flex-wrap: nowrap;
-    width: 100%;
-}
-
-/* =========================================
-   3. CATEGORY BOX (THE CRIMSON POP)
-   ========================================= */
-.elite-badge {
-    background: rgba(255, 59, 48, 0.12); /* Brighter, clearer base */
-    color: #ff3b30; /* High-visibility crimson */
-    border: 1px solid rgba(255, 59, 48, 0.35); /* Crisp physical edge */
-    font-family: var(--font-mono);
-    font-size: 0.55rem; 
-    font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-    text-transform: none !important;
-    box-shadow: 0 0 10px rgba(255, 59, 48, 0.15); /* Subtle inner terminal glow */
-}
-
-.elite-date {
-    font-family: var(--font-mono);
-    font-size: 0.55rem; /* Shrunk */
-    color: rgba(255, 255, 255, 0.35); /* Muted contrast color */
-    letter-spacing: 1px;
-    white-space: nowrap;
-    text-align: right; /* Explicitly right-aligned */
-    text-transform: none !important; /* Enforces Initial Caps */
-}
-
-/* 5. Typography & Read More Trigger */
-/* --- 3. Tightened Typography for the 280px height --- */
-.elite-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #ffffff;
-    line-height: 1.25;
-    margin-bottom: 6px; /* Reduced from 10px */
-    text-align: left;
-}
-
-.elite-content {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.6;
-    margin-bottom: 5px; /* Tightened */
-    text-align: left;
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* Strictly clamped to 3 lines again */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* --- 4. Reduced Read More Padding --- */
-.read-more-trigger {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    color: #ef4444;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin-top: auto !important; /* CRITICAL: pins to absolute bottom of padded container */
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end; 
-    gap: 5px; 
-    opacity: 0.6;
-    transition: opacity 0.3s, gap 0.3s;
-    text-transform: none !important;
-}
-
-.elite-card:hover .read-more-trigger {
-    opacity: 1;
-    gap: 8px;
-}
-
-/* 6. The Back-Face Scrollable Window (For long messages) */
-.full-content-scroll {
-    flex: 1;
-    overflow-y: auto;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.8; /* Increased from 1.6 for long-form comfort */
-    letter-spacing: 0.015em;
-    text-align: left;
-    padding-right: 15px; /* Pushes text away from the scrollbar */
-    margin-top: 10px;
-    margin-bottom: 15px;
-    cursor: text;
-    -webkit-mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
-    mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
-}
-
-/* Scrollbar styling for the terminal window */
-.full-content-scroll::-webkit-scrollbar { width: 4px; }
-.full-content-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
-.full-content-scroll::-webkit-scrollbar-thumb { background: rgba(239, 68, 68, 0.4); border-radius: 4px; }
-.full-content-scroll::-webkit-scrollbar-thumb:hover { background: rgba(239, 68, 68, 0.8); }
-
-/* Make the input terminal back-face red */
-.input-card .card-back {
-    border-color: #ef4444;
-}
-
-/* --- 4. Crisp Input Alignment (Input Card) --- */
 .card-back .ghost-field {
     width: 100%;
     background: transparent;
@@ -1642,89 +1489,42 @@ footer {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     color: white;
     font-family: var(--font-mono);
-    /* --- 5. Tighter Input Fields (To fit 3 fields on the back) --- */
     padding: 8px 0;
-    margin-bottom: 12px;
-    font-size: 0.65rem;
+    margin-bottom: 10px;
     outline: none;
-    text-align: left; /* Aligns input text with output text */
+    font-size: 0.65rem;
 }
-
-/* --- The Expanding Terminal Canvas --- */
-.card-back textarea.ghost-field {
-    flex: 1; /* Tells the textarea to expand and fill all remaining vertical space */
-    min-height: 60px; 
-    margin-bottom: 15px; /* Keeps it separated from the Confirm/Cancel buttons */
-    overflow-y: auto; /* Activates internal scrolling when text gets too long */
-}
-
-/* Custom scrollbar for the textarea to match the terminal vibe */
-.card-back textarea.ghost-field::-webkit-scrollbar { width: 3px; }
-.card-back textarea.ghost-field::-webkit-scrollbar-track { background: transparent; }
-.card-back textarea.ghost-field::-webkit-scrollbar-thumb { background: rgba(239, 68, 68, 0.4); border-radius: 4px; }
 
 .card-back .ghost-field:focus {
     border-bottom-color: #ef4444;
 }
 
+.btn-terminal.small {
+    padding: 8px 15px;
+    font-size: 0.6rem;
+    margin-top: auto;
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
+    width: 100%;
+}
+
+.btn-terminal.small:hover {
+    background: #dc2626;
+}
+
 .new-badge {
     color: #ef4444;
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     font-weight: 700;
     letter-spacing: 2px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     display: block;
-}
-/* =========================================
-   THE TACTICAL TERMINAL BUTTONS
-   ========================================= */
-
-/* --- 1. Primary Action (Confirm, Dispatch, Close Readout) --- */
-.btn-terminal.small {
-    padding: 10px 15px;
-    font-size: 0.65rem;
-    margin-top: auto;
-    width: 100%;
-    /* The Tactical Ghost State */
-    background: rgba(239, 68, 68, 0.08);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.5);
-
     font-family: var(--font-mono);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* The Interactive Hover State */
-.btn-terminal.small:hover {
-    background: #ef4444;
-    color: #ffffff;
-    border-color: #ef4444;
-    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.25);
-    transform: translateY(-2px);
-}
 
-/* --- 2. Secondary Action (Cancel) --- */
-.btn-cancel {
-    background: transparent !important;
-    color: rgba(255, 255, 255, 0.4) !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
-}
 
-.btn-cancel:hover {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: #ffffff !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    box-shadow: none !important;
-    transform: translateY(-2px);
-}
-
-/* Close Readout button inherits .btn-terminal.small tactical style */
-.close-flip-btn {}
 
 /* --- The Terminal Input Box (Ghost Style) --- */
 .terminal-entry-form {
@@ -1789,13 +1589,14 @@ footer {
 /* Responsiveness */
 @media (max-width: 1200px) {
     .blog-layout-split { gap: 40px; }
-    .calendar-panel { flex: 0 0 220px; } /* Updated to 220px */
+    .calendar-panel { flex: 0 0 280px; }
 }
 
 @media (max-width: 1024px) {
-    .blog-layout-split { display: block; } /* Switch to block if needed */
-    .calendar-panel { position: static; width: 100%; margin-bottom: 40px; }
+    .blog-layout-split { flex-direction: column; }
+    .calendar-panel { position: static; width: 100%; flex: none; }
     .blog-grid { grid-template-columns: repeat(3, 1fr); }
+    .terminal-entry-form { padding: 40px; }
 }
 
 @media (max-width: 600px) {
@@ -1924,10 +1725,4 @@ footer {
         order: -1;
         margin-bottom: 5px;
     }
-}
-
-/* --- Restore Initial Caps for UI Elements --- */
-.elite-badge,
-.read-more-trigger {
-    text-transform: none !important; /* Removes the forced uppercase */
 }
